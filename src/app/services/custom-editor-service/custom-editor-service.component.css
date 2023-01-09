@@ -56,6 +56,18 @@
   border-radius: 3px;
 }
 
-.list{
-  list-style:'>|';
+.list {
+  list-style: ">|";
+}
+
+.editor-container {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  min-height: 100px;
+  max-height: 100%;
+  transition: 0.3s;
+}
+
+/* Global Css */
+[contenteditable] {
+  outline: 0px solid transparent;
 }
