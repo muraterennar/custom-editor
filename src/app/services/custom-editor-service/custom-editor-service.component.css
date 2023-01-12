@@ -54,9 +54,11 @@
   max-height: 100%;
   border-radius: 3px;
   cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.code{
+.code {
   background-color: transparent;
   color: chartreuse;
   transition: 0.3s;
@@ -68,7 +70,7 @@
   transition: 0.3s;
 }
 
-.list:hover{
+.list:hover {
   color: chartreuse;
 }
 

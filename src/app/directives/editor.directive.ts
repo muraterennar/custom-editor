@@ -1,6 +1,4 @@
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
-import { CustomHttpClientService } from '../services/custom-http-client.service';
 import { ImageUploadService } from '../services/image-upload.service';
 
 @Directive({
@@ -26,6 +24,10 @@ export class EditorDirective implements OnInit {
     this.clickHeading();
     this.clickImage();
     this.clickCode(this.codeBtn);
+    this.clickBold(this.boldBtn);
+    this.clickItalic(this.italicBtn);
+    this.createBlog(CustomCreateElements.createBlogBtn);
+    this.contentEditableDiv();
   }
 
   // ___ Create Element Button Property ___
@@ -43,6 +45,7 @@ export class EditorDirective implements OnInit {
   hTag: HTMLHeadingElement;
   imageTag: HTMLImageElement;
   codeTag: HTMLOListElement;
+  boldTag: HTMLElement;
 
   // Create Toolbar buttons
   cretateToolBar() {
@@ -228,18 +231,22 @@ export class EditorDirective implements OnInit {
     element.appendChild(this.codeBtn);
   }
 
-  // Create Editor Tag
+  // ------------------------- Create Editor Tag -------------------------
+
+  contentEditableDiv(){
+    this.editor.contentEditable = 'true';
+  }
 
   clickParagraph(htmlElement: HTMLElement) {
     htmlElement.addEventListener('click', () => {
       this.editor = document.getElementById(CustomCreateElements.editor);
       // Cretate <p>
       this.pTag = this._renderer.createElement(CustomCreateElements.p);
-      this.pTag.innerHTML = 'Paragraf';
-      this.pTag.contentEditable = 'true';
-      this.pTag.style.padding = '5px';
+      this.pTag.id = 'toolParagraph'
+      this.pTag.innerHTML = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+      // this.pTag.contentEditable = 'true';
+      // this.pTag.style.padding = '5px';
       this.editor.appendChild(this.pTag);
-      console.log(this.pTag);
     });
 
 
@@ -252,8 +259,8 @@ export class EditorDirective implements OnInit {
     let h1: HTMLElement = document.getElementById('header1');
     h1.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h1');
-      this.hTag.innerHTML = 'Başlık',
-        this.hTag.contentEditable = 'true';
+      this.hTag.innerHTML = 'Başlık';
+      // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
 
@@ -262,7 +269,7 @@ export class EditorDirective implements OnInit {
     h2.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h2');
       this.hTag.innerHTML = 'Başlık',
-        this.hTag.contentEditable = 'true';
+        // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
 
@@ -271,7 +278,7 @@ export class EditorDirective implements OnInit {
     h3.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h3');
       this.hTag.innerHTML = 'Başlık',
-        this.hTag.contentEditable = 'true';
+        // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
 
@@ -280,7 +287,7 @@ export class EditorDirective implements OnInit {
     h4.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h4');
       this.hTag.innerHTML = 'Başlık',
-        this.hTag.contentEditable = 'true';
+        // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
 
@@ -289,7 +296,7 @@ export class EditorDirective implements OnInit {
     h5.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h5');
       this.hTag.innerHTML = 'Başlık',
-        this.hTag.contentEditable = 'true';
+        // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
 
@@ -298,7 +305,7 @@ export class EditorDirective implements OnInit {
     h6.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h6');
       this.hTag.innerHTML = 'Başlık',
-        this.hTag.contentEditable = 'true';
+        // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
 
@@ -357,7 +364,7 @@ export class EditorDirective implements OnInit {
     htmlElement.addEventListener('click', () => {
       let codeOl: HTMLOListElement = this._renderer.createElement(CustomCreateElements.ol);
       codeOl.id = 'code';
-      codeOl.contentEditable = 'true';
+      // codeOl.contentEditable = 'true';
       codeOl.classList.add('codeList');
       this.editor.appendChild(codeOl);
 
@@ -374,6 +381,40 @@ export class EditorDirective implements OnInit {
       code.appendChild(codeLi);
     })
   }
+
+  // create bold etxt
+  clickBold(htmlElement: HTMLElement) {
+    htmlElement.addEventListener('click', () => {
+      const selectedText: string = window.getSelection().toString();
+      let p: HTMLElement = document.getElementById('toolParagraph');
+      let result: string = p.innerHTML.replace(selectedText, `<b>${selectedText}</b>`);
+      p.innerHTML = result;
+    });
+  }
+
+  // create italic text
+  clickItalic(htmlElement: HTMLElement) {
+    htmlElement.addEventListener('click', () => {
+      const selectedText: string = window.getSelection().toString();
+      let p: HTMLElement = document.getElementById('toolParagraph');
+      let result: string = p.innerHTML.replace(selectedText, `<i>${selectedText}</i>`);
+      p.innerHTML = result;
+    })
+  }
+
+  // ********************** Create Blog **********************
+  createBlog(id: CustomCreateElements | string) {
+    let createBlogElement: HTMLElement = document.getElementById(id);
+    let testText: HTMLElement = document.getElementById('testText');
+    createBlogElement.addEventListener('click', () => {
+      testText.contentEditable = 'false';
+      testText.innerHTML = this.editor.innerHTML;
+      // this.editor.contentEditable = "false";
+      console.log(createBlogElement);
+      console.log(this.editor.innerHTML);
+    });
+
+  }
 }
 
 export enum CustomCreateElements {
@@ -388,7 +429,8 @@ export enum CustomCreateElements {
   input = 'input',
   label = 'label',
   p = 'p',
-  code = 'code'
+  code = 'code',
+  createBlogBtn = 'createBlog'
 }
 
 export enum CustomElementIcon {
