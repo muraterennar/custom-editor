@@ -1,4 +1,7 @@
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { CustomHttpClientService } from '../services/custom-http-client.service';
+import { ImageUploadService } from '../services/image-upload.service';
 
 @Directive({
   selector: '[customEditor]'
@@ -6,7 +9,8 @@ import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
 export class EditorDirective implements OnInit {
   constructor(
     private _renderer: Renderer2,
-    private element: ElementRef
+    private element: ElementRef,
+    private imageUploadService: ImageUploadService
   ) {
     this.cretateToolBar();
     this.createParagraph(this.toolBar);
@@ -21,6 +25,7 @@ export class EditorDirective implements OnInit {
     this.clickParagraph(this.paragraphBtn);
     this.clickHeading();
     this.clickImage();
+    this.clickCode(this.codeBtn);
   }
 
   // ___ Create Element Button Property ___
@@ -37,6 +42,7 @@ export class EditorDirective implements OnInit {
   pTag: HTMLParagraphElement;
   hTag: HTMLHeadingElement;
   imageTag: HTMLImageElement;
+  codeTag: HTMLOListElement;
 
   // Create Toolbar buttons
   cretateToolBar() {
@@ -239,6 +245,7 @@ export class EditorDirective implements OnInit {
 
   }
 
+  //  create headers h1, h2...
   clickHeading() {
     this.editor = document.getElementById(CustomCreateElements.editor);
     // Create H1
@@ -297,22 +304,21 @@ export class EditorDirective implements OnInit {
 
   }
 
+  // create image ang Image Upload and Reader
   clickImage() {
 
-    let url: any = document.getElementById('floatingInputUrl');
-    let file = document.getElementById('floatingInputFile') as HTMLInputElement;
-    file.files[0];
+    let imageurl: any = document.getElementById('floatingInputUrl');
+    let fileInput = document.getElementById('floatingInputFile') as HTMLInputElement;
     let imageAddBtn: HTMLElement = document.getElementById('imageAddBtn');
 
     imageAddBtn.addEventListener('click', () => {
-      let urlValue = url.value;
-      url.value = urlValue;
-      // console.log(url)
+      // debugger;
+      let urlValue = imageurl.value;
 
-      if (url.value) {
+      if (urlValue) {
         this.imageTag = this._renderer.createElement('img');
         this.imageTag.id = 'urlImage'
-        this.imageTag.src = url.value;
+        this.imageTag.src = urlValue;
         this.imageTag.style.width = '50%';
         this.imageTag.style.height = 'auto';
         this.imageTag.style.display = 'block';
@@ -325,36 +331,48 @@ export class EditorDirective implements OnInit {
 
         this.imageTag = this._renderer.createElement('img');
         this.imageTag.id = 'fileImage';
-        // this.imageTag.src = file.files[0].name;
         this.imageTag.style.width = '50%';
         this.imageTag.style.height = 'auto';
         this.imageTag.style.display = 'block';
         this.imageTag.style.margin = 'auto';
         this.imageTag.style.borderRadius = '3px';
 
+        debugger;
+        //  image Upload Service => fileUpload()
+        let upload: boolean = this.imageUploadService.fileUpload(fileInput.files[0]);
+        if (!upload)
+          console.log("Alert İle Hata Fırlat");
 
-        // var f: HTMLInputElement | null = document.querySelector('input[type=file]');
-        // f.files[0];
-
-        // debugger;
-        var reader: FileReader = new FileReader();
-        reader.onloadend = () => {
-          this.imageTag.src = reader.result as string;
-        }
-
-        if (file) {
-          reader.readAsDataURL(file.files[0]);
-          console.log(this.imageTag);
-        }
-        else {
-          this.imageTag.src = '';
-          console.log(this.imageTag);
-        }
+        // image Upload Service => imageReader()
+        this.imageUploadService.imageReader(this.imageTag, fileInput);
 
         this.editor.appendChild(this.imageTag);
       }
     });
 
+  }
+
+  // create code text
+  clickCode(htmlElement: HTMLElement) {
+    htmlElement.addEventListener('click', () => {
+      let codeOl: HTMLOListElement = this._renderer.createElement(CustomCreateElements.ol);
+      codeOl.id = 'code';
+      codeOl.contentEditable = 'true';
+      codeOl.classList.add('codeList');
+      this.editor.appendChild(codeOl);
+
+      // ol => code
+      let code: HTMLElement = this._renderer.createElement(CustomCreateElements.code);
+      code.classList.add('code');
+      code.classList.add('p-2');
+      codeOl.appendChild(code);
+
+      // ol => code => li
+      let codeLi: HTMLLIElement = this._renderer.createElement(CustomCreateElements.li);
+      codeLi.classList.add('list');
+      codeLi.childElementCount
+      code.appendChild(codeLi);
+    })
   }
 }
 
@@ -363,12 +381,14 @@ export enum CustomCreateElements {
   btn = 'button',
   div = 'div',
   ul = 'ul',
+  ol = 'ol',
   li = 'li',
   img = 'img',
   form = 'form',
   input = 'input',
   label = 'label',
-  p = 'p'
+  p = 'p',
+  code = 'code'
 }
 
 export enum CustomElementIcon {
