@@ -186,6 +186,18 @@ export class EditorDirective implements OnInit {
     labelFile.classList.add("form-control-label");
     iColDiv2.appendChild(labelFile);
 
+    // div => ul => form => > col-2 => iColDiv2 => fileName ınput
+    let filenameInput: HTMLInputElement = this._renderer.createElement(CustomCreateElements.input);
+    filenameInput.type = 'text';
+    filenameInput.placeholder = 'Seçtiğiniz resme isim verin !';
+    filenameInput.style.marginBottom = '10px';
+    filenameInput.style.marginTop = '10px';
+    filenameInput.style.fontSize = '0.7rem';
+    filenameInput.classList.add('form-control');
+    filenameInput.id = "imageName";
+    iColDiv2.appendChild(filenameInput);
+    console.log(filenameInput);
+
     // div => ul => form => col-3
     let iCol3: HTMLDivElement = this._renderer.createElement(CustomCreateElements.div);
     iCol3.classList.add('col-12');
@@ -233,7 +245,7 @@ export class EditorDirective implements OnInit {
 
   // ------------------------- Create Editor Tag -------------------------
 
-  contentEditableDiv(){
+  contentEditableDiv() {
     this.editor.contentEditable = 'true';
   }
 
@@ -270,7 +282,7 @@ export class EditorDirective implements OnInit {
       this.hTag = this._renderer.createElement('h2');
       this.hTag.innerHTML = 'Başlık',
         // this.hTag.contentEditable = 'true';
-      this.editor.appendChild(this.hTag);
+        this.editor.appendChild(this.hTag);
     });
 
     // Create H3
@@ -279,7 +291,7 @@ export class EditorDirective implements OnInit {
       this.hTag = this._renderer.createElement('h3');
       this.hTag.innerHTML = 'Başlık',
         // this.hTag.contentEditable = 'true';
-      this.editor.appendChild(this.hTag);
+        this.editor.appendChild(this.hTag);
     });
 
     // Create H4
@@ -288,7 +300,7 @@ export class EditorDirective implements OnInit {
       this.hTag = this._renderer.createElement('h4');
       this.hTag.innerHTML = 'Başlık',
         // this.hTag.contentEditable = 'true';
-      this.editor.appendChild(this.hTag);
+        this.editor.appendChild(this.hTag);
     });
 
     // Create H5
@@ -297,7 +309,7 @@ export class EditorDirective implements OnInit {
       this.hTag = this._renderer.createElement('h5');
       this.hTag.innerHTML = 'Başlık',
         // this.hTag.contentEditable = 'true';
-      this.editor.appendChild(this.hTag);
+        this.editor.appendChild(this.hTag);
     });
 
     // Create H6
@@ -306,7 +318,7 @@ export class EditorDirective implements OnInit {
       this.hTag = this._renderer.createElement('h6');
       this.hTag.innerHTML = 'Başlık',
         // this.hTag.contentEditable = 'true';
-      this.editor.appendChild(this.hTag);
+        this.editor.appendChild(this.hTag);
     });
 
   }
@@ -344,14 +356,23 @@ export class EditorDirective implements OnInit {
         this.imageTag.style.margin = 'auto';
         this.imageTag.style.borderRadius = '3px';
 
+        let imageNameInput = document.getElementById("imageName") as HTMLInputElement;
+        let imagename: string = imageNameInput.value
+        console.log(imageNameInput);
+
         debugger;
         //  image Upload Service => fileUpload()
-        let upload: boolean = this.imageUploadService.fileUpload(fileInput.files[0]);
+        let upload: boolean = this.imageUploadService.fileUpload(fileInput.files[0], imagename);
         if (!upload)
           console.log("Alert İle Hata Fırlat");
 
+        let imageurl: string = "";
+        this.imageUploadService.getFileByImageName(imagename, imageurl);
+        this.imageTag.src = imageurl;
+
+
         // image Upload Service => imageReader()
-        this.imageUploadService.imageReader(this.imageTag, fileInput);
+        // this.imageUploadService.imageReader(this.imageTag, fileInput);
 
         this.editor.appendChild(this.imageTag);
       }

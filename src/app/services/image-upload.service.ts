@@ -26,14 +26,26 @@ export class ImageUploadService {
     })
   }
 
+  getFileByImageName(imageName: string, imageUrl: string) {
+    this.customHttp.get({
+      controller: "Images",
+      action: `getbyimagpath/${imageName}`
+    }).subscribe(response => {
+      console.log(response);
+      imageUrl = response as string; 
+    }, (errorResponse: HttpErrorResponse) => {
+      console.log(errorResponse);
+    });
+  }
 
-  fileUpload(file: File): boolean {
+
+  fileUpload(file: File, fileName: string): boolean {
     const fileData: FormData = new FormData();
-    fileData.append(file.name, file);
+    fileData.append(fileName, file);
 
     this.customHttp.post({
       controller: "Images",
-      action: 'upload',
+      action: `upload/${fileName}`,
       headers: new HttpHeaders({ "responseType": "blob" })
     }, fileData).subscribe(() => {
       this.IsDataSuccessful = true;
