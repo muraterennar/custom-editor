@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { CustomHttpClientService } from './custom-http-client.service';
 
 @Injectable({
@@ -8,58 +9,72 @@ import { CustomHttpClientService } from './custom-http-client.service';
 export class ImageUploadService {
 
   constructor(
-    private customHttp: CustomHttpClientService
+    public customHttp: CustomHttpClientService
   ) { }
 
-  IsDataSuccessful: boolean = false;
-
-  getFiles(data?: any) {
+  getFiles() {
     this.customHttp.get({
       controller: 'images'
     }).subscribe((response) => {
-
-      data ? data = response : '';
-      console.log(data);
       console.log(response);
     }, (errorResponse: HttpErrorResponse) => {
       console.log(errorResponse);
     })
   }
 
-  getFileByImageName(imageName: string, imageUrl: string) {
-    this.customHttp.get({
-      controller: "Images",
-      action: `getbyimagpath/${imageName}`
-    }).subscribe(response => {
-      console.log(response);
-      imageUrl = response as string; 
-    }, (errorResponse: HttpErrorResponse) => {
-      console.log(errorResponse);
-    });
-  }
+  // getFileByImageName(imageName: string) {
+  //   debugger;
+  //   this.customHttp.get<ImageModel>({
+  //     controller: "images",
+  //     action: `GetByImagePath/${imageName}`,
+  //   }).subscribe(response => {
+  //     console.log(response);
 
+  //   }, (errorResponse: HttpErrorResponse) => {
+  //     console.log(errorResponse);
+  //   });
+  // }
 
-  fileUpload(file: File, fileName: string): boolean {
+  fileUpload(file: File, fileName: string) {
     const fileData: FormData = new FormData();
     fileData.append(fileName, file);
 
-    this.customHttp.post({
+     return this.customHttp.post({
       controller: "Images",
       action: `upload/${fileName}`,
       headers: new HttpHeaders({ "responseType": "blob" })
-    }, fileData).subscribe(() => {
-      this.IsDataSuccessful = true;
-    }, (errorResponse: HttpErrorResponse) => {
-      this.IsDataSuccessful = false;
-      console.log(errorResponse);
-    });
-
-    if (this.IsDataSuccessful == false) {
-      return false;
-    }
-
-    return true;
+    }, fileData);
   }
+
+  getFileByImageName(imageName: string) {
+    return this.customHttp.get<ImageModel>({
+      controller: "images",
+      action: `GetByImagePath/${imageName}`,
+    });
+  }
+
+
+  // fileUpload(file: File, fileName: string): boolean {
+  //   const fileData: FormData = new FormData();
+  //   fileData.append(fileName, file);
+
+  //   this.customHttp.post({
+  //     controller: "Images",
+  //     action: `upload/${fileName}`,
+  //     headers: new HttpHeaders({ "responseType": "blob" })
+  //   }, fileData).subscribe(() => {
+  //     this.IsDataSuccessful = true;
+  //   }, (errorResponse: HttpErrorResponse) => {
+  //     this.IsDataSuccessful = false;
+  //     console.log(errorResponse);
+  //   });
+
+  //   if (this.IsDataSuccessful == false) {
+  //     return false;
+  //   }
+
+  //   return true;
+  // }
 
   imageReader(image: HTMLImageElement, fileInput: HTMLInputElement) {
     var reader: FileReader = new FileReader();
@@ -75,4 +90,10 @@ export class ImageUploadService {
       image.src = '';
     }
   }
+}
+
+export class ImageModel {
+  id: number;
+  imageName: string;
+  imageUrl: string;
 }

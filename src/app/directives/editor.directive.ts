@@ -1,5 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
-import { ImageUploadService } from '../services/image-upload.service';
+import { ImageModel, ImageUploadService } from '../services/image-upload.service';
 
 @Directive({
   selector: '[customEditor]'
@@ -8,7 +9,7 @@ export class EditorDirective implements OnInit {
   constructor(
     private _renderer: Renderer2,
     private element: ElementRef,
-    private imageUploadService: ImageUploadService
+    public imageUploadService: ImageUploadService
   ) {
     this.cretateToolBar();
     this.createParagraph(this.toolBar);
@@ -29,6 +30,8 @@ export class EditorDirective implements OnInit {
     this.createBlog(CustomCreateElements.createBlogBtn);
     this.contentEditableDiv();
   }
+
+  IsDataSuccessful: boolean = false;
 
   // ___ Create Element Button Property ___
   toolBar: HTMLDivElement;
@@ -196,7 +199,6 @@ export class EditorDirective implements OnInit {
     filenameInput.classList.add('form-control');
     filenameInput.id = "imageName";
     iColDiv2.appendChild(filenameInput);
-    console.log(filenameInput);
 
     // div => ul => form => col-3
     let iCol3: HTMLDivElement = this._renderer.createElement(CustomCreateElements.div);
@@ -331,7 +333,6 @@ export class EditorDirective implements OnInit {
     let imageAddBtn: HTMLElement = document.getElementById('imageAddBtn');
 
     imageAddBtn.addEventListener('click', () => {
-      // debugger;
       let urlValue = imageurl.value;
 
       if (urlValue) {
@@ -358,20 +359,22 @@ export class EditorDirective implements OnInit {
 
         let imageNameInput = document.getElementById("imageName") as HTMLInputElement;
         let imagename: string = imageNameInput.value
-        console.log(imageNameInput);
 
-        debugger;
-        //  image Upload Service => fileUpload()
-        let upload: boolean = this.imageUploadService.fileUpload(fileInput.files[0], imagename);
-        if (!upload)
-          console.log("Alert İle Hata Fırlat");
+        // inputdan gelen file ismi ile File göndererek server'a kayıt ediyorum.
+        this.imageUploadService.fileUpload(fileInput.files[0], imagename).subscribe(() => {
 
-        let imageurl: string = "";
-        this.imageUploadService.getFileByImageName(imagename, imageurl);
-        this.imageTag.src = imageurl;
+          // kayıt edilen veriyi burada link olarak çağırıyorum imaga'ın src sine yazdırıyorum.
+          this.imageUploadService.getFileByImageName(imagename).subscribe((response) => {
+            this.imageTag.src = response.imageUrl;
+          }, (errorResponse: HttpErrorResponse) => {
+            console.log('throw Error Message', `${errorResponse.error}`);
+          });
 
+        }, (errorResponse: HttpErrorResponse) => {
+          this.IsDataSuccessful = false;
+          console.log(errorResponse);
+        });
 
-        // image Upload Service => imageReader()
         // this.imageUploadService.imageReader(this.imageTag, fileInput);
 
         this.editor.appendChild(this.imageTag);
@@ -430,7 +433,6 @@ export class EditorDirective implements OnInit {
     createBlogElement.addEventListener('click', () => {
       testText.contentEditable = 'false';
       testText.innerHTML = this.editor.innerHTML;
-      // this.editor.contentEditable = "false";
       console.log(createBlogElement);
       console.log(this.editor.innerHTML);
     });
