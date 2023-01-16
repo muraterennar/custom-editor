@@ -18,6 +18,7 @@ export class EditorDirective implements OnInit {
     this.createBold(this.toolBar);
     this.createItalic(this.toolBar);
     this.createCode(this.toolBar);
+    this.createLink(this.toolBar);
   }
 
   ngOnInit(): void {
@@ -27,6 +28,7 @@ export class EditorDirective implements OnInit {
     this.clickCode(this.codeBtn);
     this.clickBold(this.boldBtn);
     this.clickItalic(this.italicBtn);
+    this.clickLink();
     this.createBlog(CustomCreateElements.createBlogBtn);
     this.contentEditableDiv();
   }
@@ -41,6 +43,7 @@ export class EditorDirective implements OnInit {
   boldBtn: HTMLButtonElement;
   italicBtn: HTMLButtonElement;
   codeBtn: HTMLButtonElement;
+  linkDiv: HTMLButtonElement;
 
   // ____ Create Realtime Elements ____
   editor: HTMLElement;
@@ -49,6 +52,7 @@ export class EditorDirective implements OnInit {
   imageTag: HTMLImageElement;
   codeTag: HTMLOListElement;
   boldTag: HTMLElement;
+  linkTag: HTMLLinkElement;
 
   // Create Toolbar buttons
   cretateToolBar() {
@@ -68,7 +72,7 @@ export class EditorDirective implements OnInit {
   }
 
   createHeader(element: HTMLDivElement) {
-    // create header
+    // create header div
     this.headerBtn = this._renderer.createElement(CustomCreateElements.div);
     this.headerBtn.classList.add('dropdown-center');
 
@@ -245,6 +249,76 @@ export class EditorDirective implements OnInit {
     element.appendChild(this.codeBtn);
   }
 
+  createLink(element: HTMLDivElement) {
+
+    this.linkDiv = this._renderer.createElement(CustomCreateElements.div);
+    this.linkDiv.classList.add('dropdown-center');
+
+    // div => btn
+    let lButton: HTMLButtonElement = this._renderer.createElement(CustomCreateElements.btn);
+    lButton.type = CustomCreateElements.btn;
+    lButton.innerHTML = CustomElementIcon.link;
+    lButton.classList.add("custom-btn");
+    lButton.setAttribute('data-bs-toggle', "dropdown");
+    lButton.setAttribute('aria-expanded', "false");
+    this.linkDiv.appendChild(lButton);
+
+    // div => ul
+    let lUl: HTMLUListElement = this._renderer.createElement(CustomCreateElements.div);
+    lUl.classList.add("dropdown-menu");
+    lUl.classList.add("p-2");
+    lUl.classList.add("mt-2");
+    this.linkDiv.appendChild(lUl);
+
+    // div => ul => form
+    let lForm: HTMLFormElement = this._renderer.createElement(CustomCreateElements.form);
+    lForm.classList.add("px-1");
+    lForm.classList.add("py-1");
+    lForm.setAttribute('formControlName', "lForm");
+    lUl.appendChild(lForm);
+
+    // div => ul => form => col-1
+    let lCol: HTMLDivElement = this._renderer.createElement(CustomCreateElements.div);
+    lCol.classList.add('col-12');
+    lForm.appendChild(lCol);
+
+    // div => ul => form => col-1 => div
+    let lColDiv: HTMLDivElement = this._renderer.createElement(CustomCreateElements.div);
+    lColDiv.classList.add("form-floating");
+    lColDiv.classList.add("mb-3");
+    lCol.appendChild(lColDiv);
+
+    // div => ul => form => col-1 => iColDiv1 => inputUrl
+    let lUrl: HTMLInputElement = this._renderer.createElement(CustomCreateElements.input);
+    lUrl.type = 'url';
+    lUrl.classList.add("form-control");
+    lUrl.classList.add("form-control-sm");
+    lUrl.id = 'link_input';
+    lUrl.placeholder = 'https://...';
+    lColDiv.appendChild(lUrl);
+
+    // div => ul => form => col-1 => iColDiv1 => labelUrl
+    let labelUrl: HTMLLabelElement = this._renderer.createElement(CustomCreateElements.label);
+    labelUrl.innerHTML = 'Url';
+    labelUrl.classList.add('form-control-label');
+    labelUrl.htmlFor = 'floatingInput';
+    lColDiv.appendChild(labelUrl);
+
+    // div => ul => btn
+    let lBtn: HTMLButtonElement = this._renderer.createElement('button');
+    lBtn.type = CustomCreateElements.btn;
+    lBtn.classList.add('btn');
+    lBtn.classList.add('mt-2');
+    lBtn.classList.add('mb-1');
+    lBtn.classList.add('btn-secondary');
+    lBtn.innerHTML = 'Ekle';
+    lBtn.id = 'link_btn';
+
+    lForm.appendChild(lBtn);
+
+    element.appendChild(this.linkDiv);
+  }
+
   // ------------------------- Create Editor Tag -------------------------
 
   contentEditableDiv() {
@@ -406,7 +480,7 @@ export class EditorDirective implements OnInit {
     })
   }
 
-  // create bold etxt
+  // create bold text
   clickBold(htmlElement: HTMLElement) {
     htmlElement.addEventListener('click', () => {
       const selectedText: string = window.getSelection().toString();
@@ -423,6 +497,21 @@ export class EditorDirective implements OnInit {
       let p: HTMLElement = document.getElementById('toolParagraph');
       let result: string = p.innerHTML.replace(selectedText, `<i>${selectedText}</i>`);
       p.innerHTML = result;
+    })
+  }
+
+  clickLink() {
+    let linkBtn: HTMLElement = document.getElementById('link_btn');
+    linkBtn.addEventListener('click', () => {
+
+      const selectedText: string = window.getSelection().toString();
+      let p: HTMLElement = document.getElementById('toolParagraph');
+      let linkInput = document.getElementById('link_input') as HTMLInputElement;
+
+      let result: string = p.innerHTML.replace(selectedText, `<a href="${linkInput.value}" target="_blank">${selectedText}</a>`);
+      p.innerHTML = result;
+
+      console.log(result);
     })
   }
 
@@ -453,6 +542,7 @@ export enum CustomCreateElements {
   label = 'label',
   p = 'p',
   code = 'code',
+  link = 'a',
   createBlogBtn = 'createBlog'
 }
 
@@ -462,5 +552,6 @@ export enum CustomElementIcon {
   image = '<i class="ri-image-line"></i>',
   bold = '<strong>B</strong>',
   italic = '<i>I</i>',
-  code = '<i class="ri-code-line"></i>'
+  code = '<i class="ri-code-line"></i>',
+  link = '<i class="ri-links-line"></i>'
 }

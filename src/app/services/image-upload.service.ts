@@ -22,24 +22,11 @@ export class ImageUploadService {
     })
   }
 
-  // getFileByImageName(imageName: string) {
-  //   debugger;
-  //   this.customHttp.get<ImageModel>({
-  //     controller: "images",
-  //     action: `GetByImagePath/${imageName}`,
-  //   }).subscribe(response => {
-  //     console.log(response);
-
-  //   }, (errorResponse: HttpErrorResponse) => {
-  //     console.log(errorResponse);
-  //   });
-  // }
-
   fileUpload(file: File, fileName: string) {
     const fileData: FormData = new FormData();
     fileData.append(fileName, file);
 
-     return this.customHttp.post({
+    return this.customHttp.post({
       controller: "Images",
       action: `upload/${fileName}`,
       headers: new HttpHeaders({ "responseType": "blob" })
@@ -52,29 +39,6 @@ export class ImageUploadService {
       action: `GetByImagePath/${imageName}`,
     });
   }
-
-
-  // fileUpload(file: File, fileName: string): boolean {
-  //   const fileData: FormData = new FormData();
-  //   fileData.append(fileName, file);
-
-  //   this.customHttp.post({
-  //     controller: "Images",
-  //     action: `upload/${fileName}`,
-  //     headers: new HttpHeaders({ "responseType": "blob" })
-  //   }, fileData).subscribe(() => {
-  //     this.IsDataSuccessful = true;
-  //   }, (errorResponse: HttpErrorResponse) => {
-  //     this.IsDataSuccessful = false;
-  //     console.log(errorResponse);
-  //   });
-
-  //   if (this.IsDataSuccessful == false) {
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
 
   imageReader(image: HTMLImageElement, fileInput: HTMLInputElement) {
     var reader: FileReader = new FileReader();
