@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
+import { empty } from 'rxjs';
 import { ImageModel, ImageUploadService } from '../services/image-upload.service';
 
 @Directive({
@@ -12,30 +13,35 @@ export class EditorDirective implements OnInit {
     public imageUploadService: ImageUploadService
   ) {
     this.cretateToolBar();
-    this.createParagraph(this.toolBar);
-    this.createHeader(this.toolBar);
-    this.createImage(this.toolBar);
-    this.createBold(this.toolBar);
-    this.createItalic(this.toolBar);
-    this.createCode(this.toolBar);
-    this.createLink(this.toolBar);
+    this.creatingParagraphBtnInToolbar(this.toolBar);
+    this.creatingHeaderBtnInToolbar(this.toolBar);
+    this.creatingImageBtnInToolbar(this.toolBar);
+    this.creatingBolgBtnInToolbar(this.toolBar);
+    this.creatingItalicBtnInToolbar(this.toolBar);
+    this.creatingCodeAreaBtnInToolbar(this.toolBar);
+    this.creatingLinkBtnInToolbar(this.toolBar);
   }
 
   ngOnInit(): void {
-    this.clickParagraph(this.paragraphBtn);
-    this.clickHeading();
-    this.clickImage();
-    this.clickCode(this.codeBtn);
-    this.clickBold(this.boldBtn);
-    this.clickItalic(this.italicBtn);
-    this.clickLink();
-    this.createBlog(CustomCreateElements.createBlogBtn);
+    this.creatingParagraphInEditor(this.paragraphBtn);
+    this.creatingHeadersInEditor();
+    this.creatingImageinEditor();
+    this.creatingCodeAreaInEditor(this.codeBtn);
+    this.creatingBoldinEditor(this.boldBtn);
+    this.creatingItalicInEditor(this.italicBtn);
+    this.creatingLinkInEditor();
+    this.creatingAPreviewInEditor(CustomCreateElements.createBlogBtn);
     this.contentEditableDiv();
+    this.CreateAParagraphByPressingEnter();
+
   }
+
+
 
   IsDataSuccessful: boolean = false;
 
-  // ___ Create Element Button Property ___
+
+  //#region  ___ Create Element Button Property ___
   toolBar: HTMLDivElement;
   paragraphBtn: HTMLParagraphElement;
   headerBtn: HTMLDivElement;
@@ -44,6 +50,8 @@ export class EditorDirective implements OnInit {
   italicBtn: HTMLButtonElement;
   codeBtn: HTMLButtonElement;
   linkDiv: HTMLButtonElement;
+  //#endregion
+
 
   // ____ Create Realtime Elements ____
   editor: HTMLElement;
@@ -54,7 +62,9 @@ export class EditorDirective implements OnInit {
   boldTag: HTMLElement;
   linkTag: HTMLLinkElement;
 
-  // Create Toolbar buttons
+  //#region ********************* Creating Toolbar Buttons *********************
+
+  //#region __ Creating Toolbar __
   cretateToolBar() {
     this.toolBar = this._renderer.createElement(CustomCreateElements.div)
     this.toolBar.classList.add('container');
@@ -62,16 +72,33 @@ export class EditorDirective implements OnInit {
     this.toolBar.classList.add('mt-5');
     this._renderer.appendChild(this.element.nativeElement, this.toolBar);
   }
+  //#endregion
 
-  createParagraph(element: HTMLDivElement) {
+  //#region __ Creating Paragraph Button in Toolbar __
+  creatingParagraphBtnInToolbar(element: HTMLDivElement) {
+
     this.paragraphBtn = this._renderer.createElement(CustomCreateElements.btn);
     this.paragraphBtn.innerHTML = CustomElementIcon.paragraph;
     this.paragraphBtn.classList.add('custom-btn');
 
     element.appendChild(this.paragraphBtn);
   }
+  //#endregion
 
-  createHeader(element: HTMLDivElement) {
+  //#region __ Create A Paragraph By Pressing Enter __
+  CreateAParagraphByPressingEnter() {
+    this.editor = document.getElementById('editor') as HTMLDivElement;
+    this.editor.addEventListener('keydown', (event) => {
+      if (event.key.valueOf() === 'Enter') {
+        // console.log('Enter Tuşlandı')
+        this.creatingParagraphInEditor(this.paragraphBtn, event);
+      }
+    })
+  }
+  //#endregion
+
+  //#region __ Create Header Button in Toolbar
+  creatingHeaderBtnInToolbar(element: HTMLDivElement) {
     // create header div
     this.headerBtn = this._renderer.createElement(CustomCreateElements.div);
     this.headerBtn.classList.add('dropdown-center');
@@ -111,8 +138,10 @@ export class EditorDirective implements OnInit {
     this.headerBtn.appendChild(hUl);
     hUl.appendChild(hLi);
   }
+  //#endregion
 
-  createImage(element: HTMLDivElement) {
+  //#region __ Create Image Button in Toolbar __
+  creatingImageBtnInToolbar(element: HTMLDivElement) {
     //  crete div
     this.imageBtn = this._renderer.createElement(CustomCreateElements.div);
     this.imageBtn.classList.add('dropdown-center');
@@ -221,8 +250,10 @@ export class EditorDirective implements OnInit {
     element.appendChild(this.imageBtn);
 
   }
+  //#endregion
 
-  createBold(element: HTMLDivElement) {
+  //#region __ Creating Bold Button in Toolbar __
+  creatingBolgBtnInToolbar(element: HTMLDivElement) {
     this.boldBtn = this._renderer.createElement(CustomCreateElements.btn);
     this.boldBtn.innerHTML = CustomElementIcon.bold;
     this.boldBtn.type = CustomCreateElements.btn;
@@ -230,8 +261,10 @@ export class EditorDirective implements OnInit {
 
     element.appendChild(this.boldBtn);
   }
+  //#endregion
 
-  createItalic(element: HTMLDivElement) {
+  //#region __ Creating Italic Button in Toolbar __
+  creatingItalicBtnInToolbar(element: HTMLDivElement) {
     this.italicBtn = this._renderer.createElement(CustomCreateElements.btn);
     this.italicBtn.innerHTML = CustomElementIcon.italic;
     this.italicBtn.type = CustomCreateElements.btn;
@@ -239,8 +272,10 @@ export class EditorDirective implements OnInit {
 
     element.appendChild(this.italicBtn);
   }
+  //#endregion
 
-  createCode(element: HTMLDivElement) {
+  //#region __ Creating Code Area Button in Toolbar __
+  creatingCodeAreaBtnInToolbar(element: HTMLDivElement) {
     this.codeBtn = this._renderer.createElement(CustomCreateElements.btn);
     this.codeBtn.innerHTML = CustomElementIcon.code;
     this.codeBtn.type = CustomCreateElements.btn;
@@ -248,8 +283,10 @@ export class EditorDirective implements OnInit {
 
     element.appendChild(this.codeBtn);
   }
+  //#endregion
 
-  createLink(element: HTMLDivElement) {
+  //#region __ Creating Link Button in Toolbar
+  creatingLinkBtnInToolbar(element: HTMLDivElement) {
 
     this.linkDiv = this._renderer.createElement(CustomCreateElements.div);
     this.linkDiv.classList.add('dropdown-center');
@@ -318,15 +355,22 @@ export class EditorDirective implements OnInit {
 
     element.appendChild(this.linkDiv);
   }
+  //#endregion
 
-  // ------------------------- Create Editor Tag -------------------------
 
+  //#endregion __**_____**______**_____**_____**___ End _**__**______**__________**______**_
+
+  //#region  ------------------------- Creating Html Tags in Editor Division -------------------------
+
+  /* #region  Content Editable Div */
   contentEditableDiv() {
     this.editor.contentEditable = 'true';
   }
+  /* #endregion */
 
-  clickParagraph(htmlElement: HTMLElement) {
-    htmlElement.addEventListener('click', () => {
+  /* #region  Creating Paragraph Tag in Editor */
+  creatingParagraphInEditor(htmlElement: HTMLElement, event?: any) {
+    if (event) {
       this.editor = document.getElementById(CustomCreateElements.editor);
       // Cretate <p>
       this.pTag = this._renderer.createElement(CustomCreateElements.p);
@@ -335,13 +379,27 @@ export class EditorDirective implements OnInit {
       // this.pTag.contentEditable = 'true';
       // this.pTag.style.padding = '5px';
       this.editor.appendChild(this.pTag);
-    });
+    }
+    else {
+      htmlElement.addEventListener('click', () => {
+        this.editor = document.getElementById(CustomCreateElements.editor);
+        // Cretate <p>
+        this.pTag = this._renderer.createElement(CustomCreateElements.p);
+        this.pTag.id = 'toolParagraph'
+        this.pTag.innerHTML = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+        // this.pTag.contentEditable = 'true';
+        // this.pTag.style.padding = '5px';
+        this.editor.appendChild(this.pTag);
+      });
+    }
+
 
 
   }
+  /* #endregion */
 
-  //  create headers h1, h2...
-  clickHeading() {
+  /* #region Creating Headers Tag in Editor */
+  creatingHeadersInEditor() {
     this.editor = document.getElementById(CustomCreateElements.editor);
     // Create H1
     let h1: HTMLElement = document.getElementById('header1');
@@ -398,9 +456,10 @@ export class EditorDirective implements OnInit {
     });
 
   }
+  /* #endregion */
 
-  // create image ang Image Upload and Reader
-  clickImage() {
+  /* #region Creating Image Tag and Adding File Upload Operation in Editor */
+  creatingImageinEditor() {
 
     let imageurl: any = document.getElementById('floatingInputUrl');
     let fileInput = document.getElementById('floatingInputFile') as HTMLInputElement;
@@ -456,9 +515,10 @@ export class EditorDirective implements OnInit {
     });
 
   }
+  /* #endregion */
 
-  // create code text
-  clickCode(htmlElement: HTMLElement) {
+  /* #region Creating Code Area Tag in Editor */
+  creatingCodeAreaInEditor(htmlElement: HTMLElement) {
     htmlElement.addEventListener('click', () => {
       let codeOl: HTMLOListElement = this._renderer.createElement(CustomCreateElements.ol);
       codeOl.id = 'code';
@@ -479,9 +539,10 @@ export class EditorDirective implements OnInit {
       code.appendChild(codeLi);
     })
   }
+  /* #endregion */
 
-  // create bold text
-  clickBold(htmlElement: HTMLElement) {
+  /* #region Creating Bold Tag in Editor */
+  creatingBoldinEditor(htmlElement: HTMLElement) {
     htmlElement.addEventListener('click', () => {
       const selectedText: string = window.getSelection().toString();
       let p: HTMLElement = document.getElementById('toolParagraph');
@@ -489,9 +550,10 @@ export class EditorDirective implements OnInit {
       p.innerHTML = result;
     });
   }
+  /* #endregion */
 
-  // create italic text
-  clickItalic(htmlElement: HTMLElement) {
+  /* #region Creating Italic Tag in Editor */
+  creatingItalicInEditor(htmlElement: HTMLElement) {
     htmlElement.addEventListener('click', () => {
       const selectedText: string = window.getSelection().toString();
       let p: HTMLElement = document.getElementById('toolParagraph');
@@ -499,8 +561,11 @@ export class EditorDirective implements OnInit {
       p.innerHTML = result;
     })
   }
+  /* #endregion */
 
-  clickLink() {
+
+  /* #region Creating Link Tag In Editor */
+  creatingLinkInEditor() {
     let linkBtn: HTMLElement = document.getElementById('link_btn');
     linkBtn.addEventListener('click', () => {
 
@@ -514,9 +579,10 @@ export class EditorDirective implements OnInit {
       console.log(result);
     })
   }
+  /* #endregion */
 
-  // ********************** Create Blog **********************
-  createBlog(id: CustomCreateElements | string) {
+  /* #region Creating a Preview In Editor */
+  creatingAPreviewInEditor(id: CustomCreateElements | string) {
     let createBlogElement: HTMLElement = document.getElementById(id);
     let testText: HTMLElement = document.getElementById('testText');
     createBlogElement.addEventListener('click', () => {
@@ -527,6 +593,9 @@ export class EditorDirective implements OnInit {
     });
 
   }
+  /* #endregion */
+
+  //#endregion
 }
 
 export enum CustomCreateElements {
