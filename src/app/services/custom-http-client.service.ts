@@ -94,12 +94,7 @@ export class RequestParameters {
 }
 
 export enum ControllerTypes {
-  users = "users",
-  getByIdForUser = "users/getbyid",
-  getByIdForSkill = "skills/getbyid",
-  skills = "skills",
-  blogs = "blogs",
-  projects = "projects",
-  images = "images"
+  images = "images",
+  blogs = "blogs"
 }
 

@@ -1,0 +1,25 @@
+<header class="container-fluid mb-4 bg-primary">
+    <nav class="navbar navbar-expand navbar-light bg-transparent d-flex justify-content-between">
+        <div class="nav navbar-nav">
+            <a class="nav-item nav-link active " [routerLink]="['/']" routerLinkActive="router-link-active" aria-current="page">Home <span class="visually-hidden">(current)</span></a>
+        </div>
+        <div class="nav navbar-nav">
+            <a class="nav-item nav-link active " [routerLink]="['/admin/blog']" routerLinkActive="router-link-active" aria-current="page">Admin Paneli</a>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="row justify-content-center align-items-center g-2">
+        <div class="col-lg-4 col-md-4 col-sm-12" *ngFor="let blog of blogs">
+            <div class="card text-start">
+                <img class="card-img-topcard-image" [src]="imageSrc(blog.categoryName)" alt="Title">
+                <div class="card-body">
+                    <h1 class="blog-category">{{blog.categoryName}}</h1>
+                    <div class="innerHtml" [innerHtml]="blog.blogDescription | slice:0:500"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

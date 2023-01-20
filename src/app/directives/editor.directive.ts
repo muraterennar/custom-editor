@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 import { empty } from 'rxjs';
+import { BlogService } from '../services/blog.service';
 import { ImageModel, ImageUploadService } from '../services/image-upload.service';
 
 @Directive({
@@ -10,7 +11,8 @@ export class EditorDirective implements OnInit {
   constructor(
     private _renderer: Renderer2,
     private element: ElementRef,
-    public imageUploadService: ImageUploadService
+    public imageUploadService: ImageUploadService,
+    private blogService: BlogService
   ) {
     this.cretateToolBar();
     this.creatingParagraphBtnInToolbar(this.toolBar);
@@ -36,8 +38,6 @@ export class EditorDirective implements OnInit {
 
   }
 
-
-
   IsDataSuccessful: boolean = false;
 
 
@@ -53,7 +53,7 @@ export class EditorDirective implements OnInit {
   //#endregion
 
 
-  // ____ Create Realtime Elements ____
+  /* #region ___ Creating Realtime Elements ___ */
   editor: HTMLElement;
   pTag: HTMLParagraphElement;
   hTag: HTMLHeadingElement;
@@ -61,8 +61,9 @@ export class EditorDirective implements OnInit {
   codeTag: HTMLOListElement;
   boldTag: HTMLElement;
   linkTag: HTMLLinkElement;
+  /* #endregion */
 
-  //#region ********************* Creating Toolbar Buttons *********************
+  //#region ------------------------- Creating Toolbar Buttons -------------------------
 
   //#region __ Creating Toolbar __
   cretateToolBar() {
@@ -406,6 +407,7 @@ export class EditorDirective implements OnInit {
     h1.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h1');
       this.hTag.innerHTML = 'Başlık';
+      this.hTag.id = 'toolHearder1'
       // this.hTag.contentEditable = 'true';
       this.editor.appendChild(this.hTag);
     });
@@ -415,8 +417,9 @@ export class EditorDirective implements OnInit {
     h2.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h2');
       this.hTag.innerHTML = 'Başlık',
-        // this.hTag.contentEditable = 'true';
-        this.editor.appendChild(this.hTag);
+        this.hTag.id = 'toolHearder2'
+      // this.hTag.contentEditable = 'true';
+      this.editor.appendChild(this.hTag);
     });
 
     // Create H3
@@ -424,8 +427,9 @@ export class EditorDirective implements OnInit {
     h3.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h3');
       this.hTag.innerHTML = 'Başlık',
-        // this.hTag.contentEditable = 'true';
-        this.editor.appendChild(this.hTag);
+        this.hTag.id = 'toolHearder3'
+      // this.hTag.contentEditable = 'true';
+      this.editor.appendChild(this.hTag);
     });
 
     // Create H4
@@ -433,8 +437,9 @@ export class EditorDirective implements OnInit {
     h4.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h4');
       this.hTag.innerHTML = 'Başlık',
-        // this.hTag.contentEditable = 'true';
-        this.editor.appendChild(this.hTag);
+        this.hTag.id = 'toolHearder4'
+      // this.hTag.contentEditable = 'true';
+      this.editor.appendChild(this.hTag);
     });
 
     // Create H5
@@ -442,8 +447,9 @@ export class EditorDirective implements OnInit {
     h5.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h5');
       this.hTag.innerHTML = 'Başlık',
-        // this.hTag.contentEditable = 'true';
-        this.editor.appendChild(this.hTag);
+        this.hTag.id = 'toolHearder5'
+      // this.hTag.contentEditable = 'true';
+      this.editor.appendChild(this.hTag);
     });
 
     // Create H6
@@ -451,8 +457,9 @@ export class EditorDirective implements OnInit {
     h6.addEventListener('click', () => {
       this.hTag = this._renderer.createElement('h6');
       this.hTag.innerHTML = 'Başlık',
-        // this.hTag.contentEditable = 'true';
-        this.editor.appendChild(this.hTag);
+        this.hTag.id = 'toolHearder6'
+      // this.hTag.contentEditable = 'true';
+      this.editor.appendChild(this.hTag);
     });
 
   }
@@ -575,8 +582,6 @@ export class EditorDirective implements OnInit {
 
       let result: string = p.innerHTML.replace(selectedText, `<a href="${linkInput.value}" target="_blank">${selectedText}</a>`);
       p.innerHTML = result;
-
-      console.log(result);
     })
   }
   /* #endregion */
@@ -588,8 +593,18 @@ export class EditorDirective implements OnInit {
     createBlogElement.addEventListener('click', () => {
       testText.contentEditable = 'false';
       testText.innerHTML = this.editor.innerHTML;
-      console.log(createBlogElement);
-      console.log(this.editor.innerHTML);
+
+      /* #region Blog Post Operation */
+      let bCategory = document.getElementById("select_category") as HTMLSelectElement;
+      return this.blogService.blogPost({
+        blogCategoryId: parseInt(bCategory.value),
+        blogDescription: this.editor.innerHTML
+      }).subscribe((respone)=>{
+        console.log("Başarılı", respone);
+      },(errorResponse:HttpErrorResponse)=>{
+        console.log("Hata !",errorResponse);
+      });
+      /* #endregion */
     });
 
   }

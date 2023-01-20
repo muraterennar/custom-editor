@@ -7,6 +7,7 @@
 . custom-http-client service
 . image-upload service
 . custom-editor service 
+. blog-service
 
 -- Bağımlılıklar --
 . editor.directive => imageUploadService:ImageUploadService
