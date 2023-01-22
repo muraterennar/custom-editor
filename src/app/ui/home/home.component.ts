@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { BlogDetailModel, BlogModel, BlogService } from 'src/app/services/blog.service';
 
 @Component({
@@ -10,7 +11,8 @@ import { BlogDetailModel, BlogModel, BlogService } from 'src/app/services/blog.s
 export class HomeComponent implements OnInit {
 
   constructor(
-    private blogService: BlogService
+    private blogService: BlogService,
+    private router:Router
   ) { }
 
   ngOnInit(): void {
@@ -29,6 +31,12 @@ export class HomeComponent implements OnInit {
     });
   }
   /* #endregion */
+
+
+  // Go to blog details
+  blogDetail(data:number){
+    return this.router.navigate([`blogdetails/${data}`]);
+  }
 
   imageSrc(categoryName: string) {
     if (categoryName == CategoryName.desing) {

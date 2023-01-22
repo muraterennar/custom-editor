@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeModule } from './home/home.module';
+import { BlogDetailsModule } from './blog-details/blog-details.module';
 
 
 
@@ -8,8 +9,9 @@ import { HomeModule } from './home/home.module';
   declarations: [],
   imports: [
     CommonModule,
-    HomeModule
+    HomeModule,
+    BlogDetailsModule
   ],
-  exports: [HomeModule]
+  exports: [HomeModule, BlogDetailsModule]
 })
 export class UIModule { }

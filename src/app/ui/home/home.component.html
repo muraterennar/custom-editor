@@ -1,7 +1,7 @@
 <header class="container-fluid mb-4 bg-primary">
-    <nav class="navbar navbar-expand navbar-light bg-transparent d-flex justify-content-between">
+    <nav class="navbar navbar-expand navbar-dark bg-transparent d-flex justify-content-between">
         <div class="nav navbar-nav">
-            <a class="nav-item nav-link active " [routerLink]="['/']" routerLinkActive="router-link-active" aria-current="page">Home <span class="visually-hidden">(current)</span></a>
+            <a class="nav-item nav-link active" [routerLink]="['/']" routerLinkActive="router-link-active" aria-current="page">Ana Sayfa</a>
         </div>
         <div class="nav navbar-nav">
             <a class="nav-item nav-link active " [routerLink]="['/admin/blog']" routerLinkActive="router-link-active" aria-current="page">Admin Paneli</a>
@@ -16,8 +16,9 @@
                 <img class="card-img-topcard-image" [src]="imageSrc(blog.categoryName)" alt="Title">
                 <div class="card-body">
                     <h1 class="blog-category">{{blog.categoryName}}</h1>
-                    <div class="innerHtml" [innerHtml]="blog.blogDescription | slice:0:500"></div>
+                    <div class="innerHtml" [innerHtml]="blog.blogDescription | slice:0:400"></div>
                 </div>
+                <a name="blog_detail" id="blog_detail" class="btn btn-primary m-3" (click)="blogDetail(blog.id)" role="button">İncele</a>
             </div>
         </div>
 
