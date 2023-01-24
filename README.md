@@ -1,27 +1,22 @@
 # CustomEditor
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.10.
+Bu projede Angular mimarisinin directive özelliği ile geliştirdiğim bir Blog Editörü sizlere sunuyorum.
 
-## Development server
+## Server Bağlantısı
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Bu projeye özel geliştirdiğim [Custom-Editor-Server](https://github.com/muraterennar/custom-editor-server).
 
-## Code scaffolding
+## Yapılması Gerekenler
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- `npm install` komutunu çalıştırın.
 
-## Build
+## Editor Directive Yapısı
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Bu [Directive'de](https://github.com/muraterennar/custom-editor/blob/master/src/app/directives/editor.directive.ts) editorun tüm özelliklerinin ekliyoruz.
 
-## Running unit tests
+## Directiv'in Kullanıldığı Yer
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+[blog.component.html](https://github.com/muraterennar/custom-editor/blob/master/src/app/admin/admin-components/blog/blog.component.html) içinde `<div class="container" customEditor></div>` tagında kullanılmıştır.
 
-## Running end-to-end tests
+`<div id="editor" class="editor-container p-3 mt-4 border"></div>` editor id'li div içinde oluşturulan blog'u görebilmekteyiz.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
