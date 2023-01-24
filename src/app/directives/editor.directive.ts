@@ -596,13 +596,15 @@ export class EditorDirective implements OnInit {
 
       /* #region Blog Post Operation */
       let bCategory = document.getElementById("select_category") as HTMLSelectElement;
+      let blogTitle = document.getElementById("inputBlogTitle") as HTMLInputElement;
       return this.blogService.blogPost({
         blogCategoryId: parseInt(bCategory.value),
-        blogDescription: this.editor.innerHTML
-      }).subscribe((respone)=>{
+        blogDescription: this.editor.innerHTML,
+        blogTitle: blogTitle.value
+      }).subscribe((respone) => {
         console.log("Başarılı", respone);
-      },(errorResponse:HttpErrorResponse)=>{
-        console.log("Hata !",errorResponse);
+      }, (errorResponse: HttpErrorResponse) => {
+        console.log("Hata !", errorResponse);
       });
       /* #endregion */
     });

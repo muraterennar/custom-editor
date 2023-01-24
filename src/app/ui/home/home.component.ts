@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { BlogDetailModel, BlogModel, BlogService } from 'src/app/services/blog.service';
 
@@ -10,9 +11,11 @@ import { BlogDetailModel, BlogModel, BlogService } from 'src/app/services/blog.s
 })
 export class HomeComponent implements OnInit {
 
+  blogEmitter = new EventEmitter<any>();
+
   constructor(
     private blogService: BlogService,
-    private router:Router
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -28,14 +31,22 @@ export class HomeComponent implements OnInit {
     this.blogService.getAll().subscribe((response) => {
       this.blogs = response
       console.log(this.blogs);
+    }, (errorResponse: HttpErrorResponse) => {
+      console.log(`Hata -> ${errorResponse.status} __ ${errorResponse.message}`);
     });
   }
   /* #endregion */
 
 
   // Go to blog details
-  blogDetail(data:number){
-    return this.router.navigate([`blogdetails/${data}`]);
+  blogDetail(blog: BlogDetailModel) {
+    // let bTitle: string;
+    // for (let i = 0; i <= blog.blogTitle.length; i++) {
+    //   blog.blogTitle = blog.blogTitle.replace(" ", "").toLowerCase();
+    //   bTitle = blog.blogTitle;
+    // }
+
+    this.router.navigate([`blogdetails/${blog.blogTitle}`]);
   }
 
   imageSrc(categoryName: string) {

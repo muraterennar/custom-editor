@@ -13,7 +13,7 @@ const routes: Routes = [
   },
 
   { path: "", component: HomeComponent },
-  { path: "blogdetails/:id}", component: BlogDetailsComponent }
+  { path: "blogdetails/:blogTitle", component: BlogDetailsComponent }
 ];
 
 @NgModule({

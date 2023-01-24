@@ -16,9 +16,10 @@
                 <img class="card-img-topcard-image" [src]="imageSrc(blog.categoryName)" alt="Title">
                 <div class="card-body">
                     <h1 class="blog-category">{{blog.categoryName}}</h1>
+                    <h1>{{blog.blogTitle}}</h1>
                     <div class="innerHtml" [innerHtml]="blog.blogDescription | slice:0:400"></div>
                 </div>
-                <a name="blog_detail" id="blog_detail" class="btn btn-primary m-3" (click)="blogDetail(blog.id)" role="button">İncele</a>
+                <a name="blog_detail" id="blog_detail" class="btn btn-primary m-3" (click)="blogDetail(blog)" role="button">İncele</a>
             </div>
         </div>
 

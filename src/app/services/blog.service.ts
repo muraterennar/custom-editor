@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { CustomHttpClientService } from './custom-http-client.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlogService {
+
+blogEmitter = new EventEmitter<BlogDetailModel>();
 
   constructor(
     public customHttpService: CustomHttpClientService
@@ -15,6 +17,15 @@ export class BlogService {
       controller: "blogs",
       action: "getllbtdto"
     });
+  }
+
+  getByBlogTitle(blogTitle: string) {
+    return this.customHttpService.get<BlogDetailModel>({
+      controller: "blogs",
+      action: `getbyblogtitle/${blogTitle}`
+    });
+
+    
   }
 
   getbyid(id: number) {
@@ -30,7 +41,8 @@ export class BlogService {
       action: "add"
     }, {
       blogDescription: data.blogDescription,
-      blogCategoryId: data.blogCategoryId
+      blogCategoryId: data.blogCategoryId,
+      blogTitle: data.blogTitle
     });
   }
 
@@ -50,7 +62,6 @@ export class BlogService {
     });
   }
 
-
   /* #endregion */
 
 
@@ -59,6 +70,7 @@ export class BlogService {
 
 export interface BlogModel {
   id: number;
+  blogTitle: string;
   blogCategoryId: number;
   blogDescription: string;
 }
@@ -70,6 +82,7 @@ export interface BlogCategory {
 
 export interface BlogDetailModel {
   id: number;
+  blogTitle: string;
   categoryName: string;
   blogDescription: string;
 }
